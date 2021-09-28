@@ -6,7 +6,7 @@ st.title("Streamlit intro")
 st.write("Examples below were taken from:  https://streamlit.io/docs/getting_started.html#get-started")
 
 
-st.subheader("Here's our first attempt at using data to create a table:")
+st.subheader("Here's our first test at using data to create a table:")
 
 st.code("""
 df = pandas.DataFrame({
@@ -25,7 +25,7 @@ df
 
 
 
-st.subheader("Draw a line hart:")
+st.subheader("Draw a line hart test:")
 st.code("""
 chart_data = pandas.DataFrame(
      numpy.random.randn(20, 3),
