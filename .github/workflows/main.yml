@@ -49,7 +49,7 @@ jobs:
         echo "::set-output name=image::$ECR_REGISTRY/$ECR_REPOSITORY" 
     - name: Delete Untagged Images
       env:
-       REGION: ${{ secrets.AWS_REGION }}
+       REGION: ${{ secrets.AWS_DEFAULT_REGION }}
       run: |
         IMAGES_TO_DELETE=$( aws ecr list-images --region $REGION --repository-name $ECR_REPOSITORY --filter "tagStatus=UNTAGGED" --query 'imageIds[*]' --output json)
         aws ecr batch-delete-image --region $REGION --repository-name $ECR_REPOSITORY --image-ids "$IMAGES_TO_DELETE" || true
