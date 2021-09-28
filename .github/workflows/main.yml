@@ -34,7 +34,7 @@ jobs:
       with:
         aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        aws-region: ${{secrets.AWS_DEFAULT_REGION}}
+        aws-region: ${{secrets.AWS_REGION}}
 
     - name: Login to Amazon ECR
       id: login-ecr
@@ -54,7 +54,7 @@ jobs:
         
     - name: Delete Untagged Images
       env:
-       REGION: ${{ secrets.AWS_DEFAULT_REGION }}
+       REGION: ${{ secrets.AWS_REGION }}
       run: |
         IMAGES_TO_DELETE=$( aws ecr list-images --region $REGION --repository-name $ECR_REPOSITORY --filter "tagStatus=UNTAGGED" --query 'imageIds[*]' --output json)
         aws ecr batch-delete-image --region $REGION --repository-name $ECR_REPOSITORY --image-ids "$IMAGES_TO_DELETE" || true
