@@ -40,10 +40,6 @@ jobs:
       id: login-ecr
       uses: aws-actions/amazon-ecr-login@v1
 
-    - name: Delete Untagged Images
-      run: |
-        aws ecr describe-repositories --output text | awk '{print $5}' | while read line; do  aws ecr list-images --repository-name $line --filter tagStatus=UNTAGGED --query 'imageIds[*]' --output text | while read imageId; do aws ecr batch-delete-image --repository-name $line --image-ids imageDigest=$imageId; done; done
-
     - name: Build, tag, and push the image to Amazon ECR
       id: build-image
       env:
@@ -54,7 +50,15 @@ jobs:
         docker build -t $ECR_REGISTRY/$ECR_REPOSITORY .
         echo "Pushing image to ECR..."
         docker push $ECR_REGISTRY/$ECR_REPOSITORY
-        echo "::set-output name=image::$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
+        echo "::set-output name=image::$ECR_REGISTRY/$ECR_REPOSITORY"
+        
+    - name: Delete Untagged Images
+      env:
+       REGION: ${{ secrets.AWS_DEFAULT_REGION }}
+      run: |
+        IMAGES_TO_DELETE=$( aws ecr list-images --region $REGION --repository-name $ECR_REPOSITORY --filter "tagStatus=UNTAGGED" --query 'imageIds[*]' --output json)
+        aws ecr batch-delete-image --region $REGION --repository-name $ECR_REPOSITORY --image-ids "$IMAGES_TO_DELETE" || true
+      shell: bash
         
     - name: ECS Force Deployment
       env:
@@ -62,4 +66,6 @@ jobs:
         FARGATE_SERVICE: ${{ secrets.FARGATE_SERVICE }}
       run: |
         aws ecs update-service --cluster $FARGATE_CLUSTER --service $FARGATE_SERVICE --force-new-deployment
+        
+
         
