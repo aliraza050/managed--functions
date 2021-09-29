@@ -1,4 +1,4 @@
-my-hot-shit==1.1.0
+my-hot-shit==1.0.0
 protobuf==3.6.1
 protobuf-to-dict==0.1.0
 jupyter==1.0.0
