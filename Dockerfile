@@ -8,6 +8,8 @@ COPY requirements.txt .
 
 RUN pip install --upgrade pip
 RUN pip install streamlit
+
+ARG PIP_INDEX_URL
 RUN pip install -r requirements.txt
 
 COPY ./src /examples
