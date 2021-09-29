@@ -51,6 +51,7 @@ jobs:
         echo Getting CodeArtifact authorization...
         CODEARTIFACT_AUTH_TOKEN=$(aws codeartifact get-authorization-token --domain "${CODEARTIFACT_DOMAIN}" --query authorizationToken --output text)
         PIP_INDEX_URL="https://aws:${CODEARTIFACT_AUTH_TOKEN}@${CODEARTIFACT_DOMAIN}-${AWS_ACCOUNT_ID}.d.codeartifact.${REGION}.amazonaws.com/pypi/${CODEARTIFACT_REPO}/simple/"
+        echo $PIP_INDEX_URL
         echo "::set-output name=pip-index-url::$PIP_INDEX_URL"
         
     - name: Build, tag, and push the image to Amazon ECR
